@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useAuth } from '@/auth/auth-context';
 
 type Pitch = {
   id: string;
@@ -18,6 +21,7 @@ type Pitch = {
 const API_URL = 'http://192.168.1.28:3000/api/pitches';
 
 export default function HomeScreen() {
+  const { logout } = useAuth();
   const [pitches, setPitches] = useState<Pitch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -61,8 +65,16 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Synthetic Football Pitches</Text>
-        <Text style={styles.subtitle}>Find a pitch for your next match</Text>
+        <View style={styles.headerText}>
+          <Text style={styles.title}>Synthetic Football Pitches</Text>
+          <Text style={styles.subtitle}>Find a pitch for your next match</Text>
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void logout()}
+          style={({ pressed }) => [styles.logoutButton, pressed && styles.logoutButtonPressed]}>
+          <Text style={styles.logoutButtonText}>Log out</Text>
+        </Pressable>
       </View>
 
       {isLoading ? (
@@ -105,9 +117,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0fdf4',
   },
   header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 12,
+  },
+  headerText: {
+    flex: 1,
   },
   title: {
     color: '#14532d',
@@ -118,6 +136,21 @@ const styles = StyleSheet.create({
     color: '#4b5563',
     fontSize: 16,
     marginTop: 6,
+  },
+  logoutButton: {
+    backgroundColor: '#dc2626',
+    borderRadius: 8,
+    marginLeft: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  logoutButtonPressed: {
+    opacity: 0.8,
+  },
+  logoutButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
   },
   listContent: {
     gap: 12,
