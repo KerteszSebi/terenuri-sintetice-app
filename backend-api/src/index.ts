@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { type Request, type Response } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import { createAuthRouter } from "./routes/auth";
 
 const app = express();
 const connectionString = process.env.DATABASE_URL;
@@ -15,6 +16,7 @@ const prisma = new PrismaClient({ adapter });
 const port = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
+app.use("/api/auth", createAuthRouter(prisma));
 
 app.get("/health", (_request: Request, response: Response) => {
   response.status(200).json({ status: "ok" });

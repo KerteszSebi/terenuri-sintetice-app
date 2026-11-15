@@ -18,10 +18,11 @@ enum MatchStatus {
 }
 
 model User {
-  id    String   @id @default(uuid())
-  email String   @unique
-  name  String?
-  role  UserRole @default(PLAYER)
+  id       String   @id @default(uuid())
+  email    String   @unique
+  name     String?
+  password String
+  role     UserRole @default(PLAYER)
 
   createdMatches Match[]       @relation("MatchCreator")
   matchPlayers   MatchPlayer[]
